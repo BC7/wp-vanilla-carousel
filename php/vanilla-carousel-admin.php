@@ -41,6 +41,41 @@ function vc_cpt_register() {
 	register_post_type('vanilla_carousel', $args);
 }
 
+// FILTER HOOK - ADD CUSTOM COLUMNS FOR CUSTOM POST LIST TABLE
+function vc_cpt_dashboard_columns($columns) {
+	// new columns to be added
+	$new_columns = array(
+		'cb'		=> 'Bulk Acions',
+		'title'  	=> 'Title',
+		'slides' 	=> 'Slides',
+		'shortcode' => 'Shortcode',
+		'css_id' 	=> 'CSS ID',
+		'date' 		=> 'Date'
+	);
+	return $new_columns;
+}
+
+// ACTION HOOK - POPULATE CUSTOM POST LIST TABLE VALUES
+function vc_cpt_render_dashboard_columns($column, $post_id) {
+    switch ( $column ) {
+ 		case 'title'   :
+			echo get_post_meta( $post_id , $column , true );
+			break;
+        case 'slides'  :
+            echo 0;
+			break;
+		case 'shortcode'    :
+			echo "[vanilla-carousel id='$post_id']";
+			break;
+		case 'css_id':
+			echo 'css';
+			break;
+ 
+    }
+}
+
 add_action('init', 'vc_cpt_register');
+add_filter('manage_vanilla_carousel_posts_columns', 'vc_cpt_dashboard_columns');
+add_action('manage_vanilla_carousel_posts_custom_column', 'vc_cpt_render_dashboard_columns', 10, 2);
 
 ?>
